@@ -102,6 +102,7 @@ def newListing(request):
             newListing.creator = request.user
             newListing.save()
 
+
             for form in imagesForm.cleaned_data:
                 if form:
                     picture = form['picture']
