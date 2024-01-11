@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 
-from .models import Listing, User, Picture
+from .models import Bid, Category, Listing, User, Picture,comment
 
 class newListingForm(ModelForm):
     class Meta:
@@ -21,7 +21,6 @@ class newListingForm(ModelForm):
             'category': forms.Select(attrs={'class': 'w-full rounded-lg border border-gray-300 p-2'}),
         }
 
-
 class newPictureForm(ModelForm):
     class Meta:
         model = Picture
@@ -33,10 +32,39 @@ class newPictureForm(ModelForm):
 
         }
 
+class newBidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['offer']
+
+class newCommentForm(ModelForm):
+    class Meta:
+        model = comment
+        fields = ['comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'class': 'px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800','placeholder': 'Leave your comment here','rows':'4'})
+        }
+
+
         
 def index(request):
-    return render(request, "auctions/index.html")
-
+    category_id = request.GET.get("category", None)
+    if category_id is None:
+        listings = Listing.objects.filter(active=True)
+    else:
+        listings = Listing.objects.filter(active=True, category=category_id)
+    categories = Category.objects.all()
+    for listing in listings:
+        listing.mainPicture = listing.get_pictures.first()
+        if request.user in listing.watchers.all():
+            listing.is_watched = True
+        else:
+            listing.is_watched = False
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "categories": categories,
+        "page_title": "Active Listings"
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -57,11 +85,9 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
 
 def register(request):
     if request.method == "POST":
@@ -92,7 +118,7 @@ def register(request):
 @login_required
 def newListing(request):
     PictureFormSet = modelformset_factory(Picture,
-                                        form=newPictureForm, extra=3)
+                                        form=newPictureForm, extra=1)#defaul 3
     if request.method == "POST":        
         form = newListingForm(request.POST, request.FILES)
         imagesForm = PictureFormSet(request.POST, request.FILES,
@@ -128,12 +154,29 @@ def newListing(request):
         })
     
 def listing(request, listing_id):
-    return render(request, "auctions/listing.html")
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    
+    listing = Listing.objects.get(id=listing_id)    
+    if request.user in listing.watchers.all():
+        listing.is_watched = True
+    else:
+        listing.is_watched = False    
+    return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "listing_pictures": listing.get_pictures.all(),
+        "form": newBidForm(),
+        "comments": listing.get_comments.all(),
+        "comment_form": newCommentForm()        
+    })
 
-"""path("auction/active", views.activeListings, name="activeListings"),
-path("auction/active/<int:category_id>", views.activeListings, name="activeListings"),
-path("auction/watchlist", views.watchlist, name="watchlist"),
-path("auction/watchlist/<int:listing_id>/change/<str:reverse_method>", views.change_watchlist, name="change_watchlist"),
-path("auction/listing/<int:listing_id>/bid", views.take_bid, name="take_bid"),    
-path("auction/listing/<int:listing_id>/close", views.close_listing, name="close_listing"),
-path("auction/listing/<int:listing_id>/comment", views.comment, name="comment")"""
+@login_required
+def comments(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    form = newCommentForm(request.POST)
+    newComment = form.save(commit=False)
+    newComment.user = request.user
+    newComment.listing = listing
+    newComment.save()
+    return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+

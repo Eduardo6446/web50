@@ -45,5 +45,5 @@ class comment(models.Model):
 
 class Picture(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="get_pictures")
-    picture = models.ImageField(upload_to="images/")
+    picture = models.ImageField(upload_to="static\\auctions\\images")
     alt_text = models.CharField(max_length=140) 
