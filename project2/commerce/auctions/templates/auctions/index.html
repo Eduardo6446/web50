@@ -18,9 +18,9 @@
 <div class="flex items-center justify-center py-4 md:py-8 flex-wrap gap-3">
     
     {% for listing in listings %}
-    <figure class="relative max-w-sm max-h-sm">
+    <figure class="relative max-w-sm max-h-sm ">
         <a href="{% url 'listing' listing.id %}">
-            <img class="rounded-lg w-full h-full object-cover " style="height: 260px; width: 340px;" src="../../../{{ listing.mainPicture.picture }}" alt="image description">
+            <img class="rounded-lg w-full h-full object-cover" style="height: 260px; width: 340px;" src="../../../{{ listing.mainPicture.picture }}" alt="image description">
         </a>
         <figcaption class="absolute px-4 text-lg text-white bottom-6 w-full">
             <p>{{ listing.title }}</p>
@@ -33,7 +33,7 @@
                 {% endif %}
             </span>
             
-            <a href="#" class="absolute right-0 bottom-1">
+            <a href="{% url 'change_watchlist' listing.id 'activeListings' %}" class="absolute right-0 bottom-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(255, 255, 255);"><path d="M12 4c-4.879 0-9 4.121-9 9s4.121 9 9 9 9-4.121 9-9-4.121-9-9-9zm0 16c-3.794 0-7-3.206-7-7s3.206-7 7-7 7 3.206 7 7-3.206 7-7 7z"></path><path d="M13 8h-2v4H7v2h4v4h2v-4h4v-2h-4zm7.292-1.292-3.01-3 1.412-1.417 3.01 3zM5.282 2.294 6.7 3.706l-2.99 3-1.417-1.413z"></path></svg>
             </a>
         </figcaption>

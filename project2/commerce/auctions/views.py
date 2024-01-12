@@ -36,6 +36,7 @@ class newBidForm(ModelForm):
     class Meta:
         model = Bid
         fields = ['offer']
+        
 
 class newCommentForm(ModelForm):
     class Meta:
@@ -170,6 +171,27 @@ def listing(request, listing_id):
         "comment_form": newCommentForm()        
     })
 
+def activeListings(request):
+    category_id = request.GET.get("category", None)
+    if category_id is None:
+        listings = Listing.objects.filter(active=True)
+    else:
+        listings = Listing.objects.filter(active=True, category=category_id)
+    categories = Category.objects.all()
+    for listing in listings:
+        listing.mainPicture = listing.get_pictures.first()
+        if request.user in listing.watchers.all():
+            listing.is_watched = True
+        else:
+            listing.is_watched = False
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "categories": categories,
+        "page_title": "Active Listings"
+    })
+    
+
+
 @login_required
 def comments(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
@@ -179,4 +201,74 @@ def comments(request, listing_id):
     newComment.listing = listing
     newComment.save()
     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+
+@login_required
+def change_watchlist(request, listing_id, reverse_method):
+    listing_object = Listing.objects.get(id=listing_id)
+    if request.user in listing_object.watchers.all():
+        listing_object.watchers.remove(request.user)
+    else:
+        listing_object.watchers.add(request.user)
+
+    if reverse_method == "listing":
+        return listing(request,listing_id)
+    else:
+        return HttpResponseRedirect(reverse(reverse_method))
+
+@login_required
+def watchlist(request):
+    listings = request.user.watched_listings.all()
+    categories = Category.objects.all()
+    for listing in listings:
+        listing.mainPicture = listing.get_pictures.first()
+        if request.user in listing.watchers.all():
+            listing.is_watched = True
+            print(listing.is_watched)
+        else:
+            listing.is_watched = False    
+            print(listing.is_watched)
+
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "page_title": "My watchlist",
+        "categories": categories
+    })
+
+@login_required
+def take_bid(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    offer = float(request.POST['offer'])
+    if is_valid(offer,listing):
+        listing.currentBid = offer
+        form = newBidForm(request.POST)
+        newBid = form.save(commit=False)
+        newBid.auction = listing
+        newBid.user = request.user
+        newBid.save()
+        listing.save()
+        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "listing_pictures": listing.get_pictures.all(),
+            "form": newBidForm(),
+            "error_min_value": True        
+        })
+    
+def is_valid(offer,listing):
+    if offer >= listing.startingBid and (listing.currentBid is None or offer > listing.currentBid):
+        return True
+    else:
+        return False
+
+def close_listing(request,listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    if request.user == listing.creator:
+        listing.active = False        
+        listing.buyer = Bid.objects.filter(auction=listing).last().user
+        listing.save()
+        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+    else:
+        listing.watchers.add(request.user)
+    return HttpResponseRedirect(reverse("watchlist"))
 
