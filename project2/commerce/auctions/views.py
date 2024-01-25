@@ -228,7 +228,7 @@ def watchlist(request):
             listing.is_watched = False    
             print(listing.is_watched)
 
-    return render(request, "auctions/index.html", {
+    return render(request, "auctions/watchlist.html", {
         "listings": listings,
         "page_title": "My watchlist",
         "categories": categories

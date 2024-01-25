@@ -5,7 +5,7 @@
 <section class="bg-white dark:bg-gray-900">
     <div class="gap-8 items-center py-8 px-4 mx-auto max-w-screen-xl xl:gap-16 md:grid md:grid-cols-2 sm:py-16 lg:px-6">
         {% for item in listing_pictures %}
-                <img class="w-full rounded-lg" src="{{ item.picture.url }}" alt="{{ item.alt_text }}">
+                <img class="w-full rounded-lg" src="../../..{{ item.picture.url }}" alt="{{ item.alt_text }}">
             {% empty %}
                 <img class="w-full rounded-lg" src="https://www.inbounder.com.br/wp-content/themes/inbounder/images/no-image/No-Image-Found-400x264.png" alt="No image found.">
             {% endfor %} 
@@ -15,7 +15,7 @@
             <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ listing.title }}</h2>
 
             {% if  listing.creator == user and listing.active %}
-                    <a class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 pb-2" href="{% url 'change_watchlist' listing.id 'listing' %}" role="button">Close Listing</a>
+                    <a class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 pb-2" href="{% url 'close_listing' listing.id %}" role="button">Close Listing</a>
             {% endif %}
 
             {% if listing.is_watched and listing.active %}
