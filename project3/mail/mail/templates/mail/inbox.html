@@ -1,0 +1,109 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div id="header">
+
+    <h2><img id="logo" src="{% static 'mail/logo.png' %}" alt="Mail Logo" width="auto" height="50">{{ request.user.email }}</h2>
+
+      <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
+      <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
+      <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
+      <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+      <hr>
+    </div>
+
+    <!-- Alert Message Flashes-->
+    <div id="alert-view">
+      <div class="alert alert-success alert-dismissible fade show" style="display: none" role="alert">
+        <p>Default Success Message</p>
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="alert alert-warning alert-dismissible fade show" style="display: none" role="alert">
+        <p>Default Warning Message</p>
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="alert alert-danger alert-dismissible fade show" style="display: none" role="alert">
+        <p>Default Danger Message</p>
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MailBox View-->
+    <div id="mailbox">
+      <h3 id="mailbox-name"></h3>
+      <form id="search-form">
+          <label class="sr-only" for="search">Search Emails</label>
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-search"></i></div>
+            </div>
+            <input type="text" class="form-control form-control-sm" id="search" placeholder="Search Emails by Sender or Subject" autocomplete="off"> &emsp;
+            <span id="search-clear"><strong>X</strong></span>
+        </div>
+      </form>
+      <!-- Main Mailbox -->
+      <div id="mailbox-view">
+      </div>
+    </div>
+
+    <!-- Individual Email View-->
+    <div id="email-view">
+      <!--Email View Archive Buttons-->
+      <div id="email-archive-buttons" class="btn-toolbar float-right">
+        <button class="btn btn-sm btn-info" id="email-archive" disabled><i class="fas fa-archive" aria-hidden="true"></i>
+          Archive</button>
+      </div>
+
+      <!-- Email View Reply Buttons-->
+      <div id="email-reply-buttons" class="btn-toolbar">
+        <button class="btn btn-sm btn-primary" id="email-reply" disabled><i class="fas fa-reply" aria-hidden="true"></i> Reply</button>
+        <button class="btn btn-sm btn-primary" id="email-reply-all" disabled><i class="fas fa-reply-all" aria-hidden="true"></i> Reply All</button>
+        <button class="btn btn-sm btn-primary" id="email-forward" disabled><i class="fas fa-share" aria-hidden="true"></i> Forward</button>
+      </div>
+
+
+
+      <!-- Email Details -->
+      <h4 id="email-subject"></h4>
+      <h5 id="email-sender"></h5>
+      <p id="email-date"></p>
+      <p id="email-recipients"></p>
+      <hr>
+      <p id="email-body"></p>
+    </div>
+
+    <div id="compose-view">
+        <h3>New Email</h3>
+        <form id="compose-form">
+            <div class="form-group">
+                From: <input disabled class="form-control" value="{{ request.user.email }}">
+            </div>
+            <div class="form-group">
+                To: <input id="compose-recipients" class="form-control">
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="compose-subject" placeholder="Subject">
+            </div>
+            <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
+            <input id="compose-submit" type="submit" class="btn btn-primary" value="Send"/>
+        </form>
+        <div id="compose-warning">
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'mail/inbox.js' %}"></script>
+{% endblock %}

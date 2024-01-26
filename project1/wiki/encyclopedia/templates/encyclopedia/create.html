@@ -1,0 +1,26 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}\
+Create
+{% endblock %}
+
+{% block body %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+      <div class="alert alert-danger" role="alert"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form action="/create" method="post">
+    <h2 style="margin-bottom: 3%;">New Page</h2>
+
+{% csrf_token %}
+
+{{form}}
+<button class="btn btn-primary" type="submit">Create new page</button>
+
+</form>
+
+{% endblock %}

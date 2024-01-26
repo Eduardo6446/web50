@@ -1,0 +1,10 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}}
+{% endblock %}
+
+{% block body %}
+<a style="float: right; margin-right: 5%;" href="">Edit  this page!</a>
+{{ content | safe}}
+{% endblock %}

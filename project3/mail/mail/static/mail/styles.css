@@ -1,0 +1,159 @@
+
+/*=========================================================
+CUSTOM STYLES
+===========================================================
+*/
+
+/*=============================
+FONTS
+===============================
+*/
+
+body {
+  background: #fff;
+  color: black;
+  font: 400 16px/22px "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.1;
+  margin: 0 0 0 0;
+}
+
+h2, h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+h5 {
+  margin-bottom: 0px;
+}
+
+p {
+  margin-bottom: 5px;
+}
+
+
+.alert p {
+    margin: 3px 0 3px 0;
+}
+
+/*=============================
+HEADER
+===============================
+*/
+
+#header hr {
+  height: 0;
+  border-top: 2px solid black;
+}
+
+#logo {
+  margin-right: 10px;
+}
+
+/*=============================
+MAILBOX VIEW
+===============================
+*/
+
+#mailbox-view {
+  margin: 10px 0 10px 0;
+}
+
+#search-form {
+  width: 50%;
+}
+
+#search-clear{
+  line-height: 1.8;
+}
+
+#search-clear:hover{
+  cursor: pointer;
+}
+
+.mailbox-email {
+  position: relative;
+  margin: 0 0 2px 0;
+  border: 1px solid black;
+}
+
+.mailbox-email:hover, .mailbox-email.read:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.mailbox-email.read, .mailbox-read-true {
+  background-color: #eee;
+}
+
+.mailbox-email div {
+  position: absolute;
+  width: 5px;
+  height: 100%;
+}
+
+.mailbox-read-false {
+  background-color: #007bff;
+}
+
+.mailbox-sender{
+  margin: 2px 5px 0 10px;
+  font-weight: bold;
+}
+
+.mailbox-date{
+  margin: 0 10px 0 5px;
+  position: absolute;
+  top: 25%;
+  right: 0;
+  font-weight: 300;
+}
+
+.mailbox-subject{
+  margin: 0 5px 2px 10px;
+}
+
+
+/*=============================
+EMAIL VIEW
+===============================
+*/
+
+#email-view {
+  display: none;
+  position: relative;
+}
+
+
+#email-date {
+  font-weight: 300;
+}
+
+#email-recipients {
+  margin-top: 10px;
+}
+
+#email-body {
+  white-space: pre-wrap;
+}
+
+
+#email-archive, #email-reply, #email-reply-all, #email-forward {
+  margin: 0 0 10px 4px;
+}
+
+/*=============================
+COMPOSE VIEW
+===============================
+*/
+
+#compose-view {
+  display: none;
+}
+
+textarea {
+  min-height: 400px;
+}
+
+#compose-submit {
+  margin-top: 10px;
+}
